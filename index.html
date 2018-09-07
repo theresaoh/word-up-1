@@ -6,21 +6,17 @@
 
     <title>Word Up!</title>
 
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-2.2.3.js"></script>
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
+    <!-- Vue.js -->
+    <script src="https://unpkg.com/vue@2.5.16/dist/vue.js"></script>
 
     <!-- our CSS -->
     <link rel="stylesheet" href="css/styles.css"/>
-
 </head>
 <body>
 
-    <h1 class="jumbotron">Word Up!</h1>
+    <h1 class="game-title">Word Up!</h1>
 
-    <main>
+    <main class="mount-point">
 
         <!--
         a section for things that should always be showing,
@@ -30,20 +26,21 @@
             <!--
             A "scoreboard" to display the user's current score
             and the time remaining -->
-            <div id="scoreboard" class="row">
-                <div class="col-xs-6">
-                    <h6>Time Remaining</h6>
-                    <h1 class="scoreboard-data" id="time-remaining"></h1>
+            <div id="scoreboard">
+                <div>
+                    <h5>Time Remaining</h5>
+                    <h2 class="scoreboard-data">{{secondsRemaining}}</h2>
                 </div>
-                <div class="col-xs-6">
-                    <h6>Score</h6>
-                    <h1 class="scoreboard-data" id="current-score"></h1>
+                <div>
+                    <h5>Score</h5>
+                    <h2 class="scoreboard-data">{{ currentScore }}</h2>
                 </div>
             </div>
 
             <!-- TODO 1
             Make a "New Game" button
             -->
+            <button class="new-game-button" @click="startGame">New Game</button>
         </section>
 
         <!-- things that should not show up until the (first) game has started -->
@@ -52,26 +49,92 @@
             <!-- TODO 4
             Add some instructions so the user knows what to do.
             -->
+            <p>
+                Spell as many words as you can, using only these letters:
+            </p>
 
             <!-- TODO 5
             Make an empty container to hold the letter chips.
             -->
+            <div class="letter-chips">
+                <letter-chip
+                    v-for="letter in allowedLetters"
+                    :letter="letter"
+                    :value="letterScore(letter)"
+                />
+            </div>
 
             <!-- the form via which the user attempts to submit new words -->
-            <form id="word-attempt-form">
+            <div id="word-attempt-form">
                 <!-- the actual text box where the user types -->
-                <input type="text" id="textbox"/>
+                <input
+                    v-model="currentAttempt"
+                    type="text"
+                    id="textbox"
+                    @keyup.enter="addNewWordSubmission(currentAttempt)"
+                />
 
                 <br>
+                <div class="disallowed-letters">
+                    <span v-for="letter in disallowedLettersInWord">
+                        {{ letter }}
+                    </span>
+                </div>
                 <!-- red feedback chips will be injected here -->
-            </form>
+            </div>
 
             <!-- a container to display the user's word submissions -->
             <div id="word-submissions">
                 <!-- word submission chips will be injected here -->
+                <submitted-word
+                    v-for="w in wordSubmissions"
+                    :word="w.word"
+                    :score="w.score"
+                    :loading="w.loading"
+                    :is-real-word="w.isRealWord"
+                />
             </div>
         </section>
     </main>
+
+    <!--
+        The following are the templates for the letter-chip and
+        submitted-word components. Because we could have multiple
+        letter-chip on the page at once, we define a template
+        that Vue will use as many times as necessary to specify
+        how the HTML will be laid out.
+
+        It's more common in my experience to use Vue's
+        single-file-components, which allow you to write the
+        template, javascript, and styling for a component all
+        together in one file. However, those require a build
+        step, and installing some tools. This will be easier to
+        get started with.
+    -->
+
+    <script type="text/x-template" id="letter-chip-template">
+        <span class="letter-chip">
+            {{ letter }}
+            <span class="chip-value">
+                {{ value }}
+            </span>
+        </span>
+    </script>
+
+    <script type="text/x-template" id="submitted-word-template">
+        <span class="submitted-word">
+            {{ word }}
+            <span v-if="loading" class="submitted-word-loading">
+                ...
+            </span>
+            <span v-else-if="isRealWord" class="submitted-word-success">
+                {{ score }}
+            </span>
+            <span v-else-if="!isRealWord" class="submitted-word-not-real">
+                &times;
+            </span>
+        </span>
+    </script>
 
     <!-- our script -->
     <script src="scripts/wordup.js"></script>
