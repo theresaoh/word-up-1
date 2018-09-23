@@ -161,7 +161,7 @@ Finally, take a look at `styles.css`. There are no TODOs on this file, but in or
 
 Time to get started!
 
-I have bad news and good news for you. The bad news is that you have a lot (21!) of `TODO`s. The good news is that each task is relatively small, often only one or two lines of code, and you will be given fairly detailed guidance.
+I have bad news and good news for you. The bad news is that you have a lot (17!) of `TODO`s. The good news is that each task is relatively small, often only one or two lines of code, and you will be given fairly detailed guidance.
 
 <img src="http://66.media.tumblr.com/2e96a51d21f3fa17d94af64c8cea61bd/tumblr_ndwyr0McLD1thj99uo4_250.gif" />
 
