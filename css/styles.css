@@ -125,6 +125,11 @@ input:focus {
     outline-color: #4285f4; /* outline is the fuzzy "glow" */
 }
 
+.contains-disallowed input {
+    border-color: #d9534f;
+    color: #d9534f;
+}
+
 .new-game-button {
     padding: 20px;
     background-color: #4285f4;

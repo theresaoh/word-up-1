@@ -73,28 +73,16 @@ function wordScore(word) {
     // split the word into a list of letters
     var letters = word.split("");
 
-    // TODO 19
+    // TODO 15
     // Replace the empty list below.
     // Map the list of letters into a list of scores, one for each letter.
-    var letterScores = letters.map(letterScore);
+    var letterScores = [];
 
     // return the total sum of the letter scores
     return letterScores.reduce(add, 0);
 }
 
 
-/**
- * Returns the user's current total score, which is the sum of the
- * scores of all the wordSubmissions whose word is a real dictionary word
- */
-function currentScore(words) {
-    // a list of scores, one for each word submission
-    var wordScores = words
-        .filter(submission => submission.isRealWord)
-        .map(submission => wordScore(submission.word));
-
-    return wordScores.reduce(add, 0);
-}
 
 
 // ----------------- UTILS -----------------
@@ -103,8 +91,6 @@ function currentScore(words) {
  * Randomly selects n items from a list.
  * Returns the selected items together in a (smaller) list.
  *
- * (I believe this is using an algorithm called
- *  "Fisher-Yates Shuffle")
  */
 function chooseN(n, items) {
     var selectedItems = [];
@@ -152,7 +138,14 @@ var app = new Vue({
     },
     computed: {
         currentScore: function () {
-            return currentScore(this.wordSubmissions);
+            /**
+             * Returns the user's current total score, which is the sum of the
+             * scores of all the wordSubmissions whose word is a real dictionary word
+             */
+            // TODO 16
+            // add up all the wordScore values from the words in this.wordSubmissions
+            // be sure not to include any that aren't real words.
+            return 0;
         },
         gameInProgress: function() {
             return this.secondsRemaining > 0 && this.timer !== null;
@@ -164,7 +157,7 @@ var app = new Vue({
              */
 
             var letters = this.currentAttempt.split("");
-            return letters.filter(letter => this.isDisallowedLetter(letter));
+            return letters.filter(l => this.isDisallowedLetter(l));
         },
 
         containsOnlyAllowedLetters: function() {
@@ -182,10 +175,20 @@ var app = new Vue({
              * Given a letter, checks whether that letter is "disallowed"
              * meaning it is not a member of the .allowedLetters list from the current data
              */
-            return !this.allowedLetters.includes(letter);
+
+            //TODO 7 actually check if the letter is disallowed
+            return false;
         },
 
+        // The next couple lines are odd.
+        // It seems like they're not doing anything useful.
+        // It says:
+        // > remember that `letterScore` function we defined above?
+        // > Well, we're going to add it to `methods` using the same name.
+        // This turns out to be useful because it makes the function available
+        // for use within our template in index.html.
         letterScore: letterScore,
+        wordScore: wordScore,
 
         generateAllowedLetters: function() {
             /**
@@ -198,7 +201,6 @@ var app = new Vue({
 
         startGame: function() {
             // Resets the data to a starting state, and then starts the timer
-            console.log('inside start game');
             this.endGame(); // terminate any existing games before starting a new one.
             this.gameHasStarted = true;
             this.secondsRemaining = GAME_DURATION,
@@ -219,7 +221,7 @@ var app = new Vue({
              */
 
             // Do we already have a wordSubmission with this word?
-            // TODO
+            // TODO 17
             // replace the hardcoded 'false' with the real answer
             var alreadyUsed = false;
             if (this.containsOnlyAllowedLetters && !alreadyUsed) {
@@ -228,16 +230,15 @@ var app = new Vue({
                 // that we're not sure yet if this is a real word.
                 this.wordSubmissions.push({
                     word: word,
-                    score: wordScore(word),
                     loading: true,
-                    isRealWord: null,
                 });
 
                 // Now, check against the api to see if the word is real.
                 // when the api call comes back, we can update loading and isRealWord.
                 this.checkIfWordIsReal(word);
             }
-            this.currentAttempt = '';
+            // TODO 10
+            // now that we've added the word, clear out the text input.
         },
         checkIfWordIsReal: function(word) {
             /**
@@ -247,8 +248,8 @@ var app = new Vue({
              * the corresponding wordSubmission in the data.
              */
 
-            // TODO what should the url be?
-            fetch(`http://api.pearson.com/v2/dictionaries/lasde/entries?headword=${word}`)
+            // TODO 12 what should the url be?
+            fetch(`www.example.com`)
                 .then(response => (response.ok ? response.json() : Promise.reject(response)))
                 .then(resp => {
                     console.log("We received a response from Pearson!");
@@ -256,22 +257,16 @@ var app = new Vue({
                     // let's print the response to the console so we can take a looksie
                     console.log(resp);
 
-                    // TODO 14
+                    // TODO 13
                     // Replace the 'true' below.
                     // If the response contains any results, then the word is legitimate.
                     // Otherwise, it is not.
-                    var isARealWord = resp.count > 0;
+                    var isARealWord = true;
 
-                    // TODO 15
+                    // TODO 14
                     // Update the data to say that the word is real.
                     // You'll have to find the correct entry in this.wordSubmissions,
                     // and change it's loading and isRealWord values
-                    this.wordSubmissions.forEach((w) => {
-                        if (w.word === word) {
-                            w.isRealWord = isARealWord;
-                            w.loading = false;
-                        }
-                    });
                 })
                 .catch(error => console.error(error));
         },

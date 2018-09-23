@@ -29,7 +29,10 @@
             <div id="scoreboard">
                 <div>
                     <h5>Time Remaining</h5>
-                    <h2 class="scoreboard-data">{{secondsRemaining}}</h2>
+                    <h2 class="scoreboard-data">60</h2>
+                    <!-- TODO 2
+                    Make the time remaining update with the correct value
+                    -->
                 </div>
                 <div>
                     <h5>Score</h5>
@@ -40,7 +43,6 @@
             <!-- TODO 1
             Make a "New Game" button
             -->
-            <button class="new-game-button" @click="startGame">New Game</button>
         </section>
 
         <!-- things that should not show up until the (first) game has started -->
@@ -49,50 +51,35 @@
             <!-- TODO 4
             Add some instructions so the user knows what to do.
             -->
-            <p>
-                Spell as many words as you can, using only these letters:
-            </p>
 
-            <!-- TODO 5
-            Make an empty container to hold the letter chips.
-            -->
             <div class="letter-chips">
-                <letter-chip
-                    v-for="letter in allowedLetters"
-                    :letter="letter"
-                    :value="letterScore(letter)"
-                />
+                <!-- TODO 5
+                Fill this container with a <letter-chip> for each value in allowedLetters
+                -->
+
             </div>
 
             <!-- the form via which the user attempts to submit new words -->
-            <div id="word-attempt-form">
+            <div
+                id="word-attempt-form"
+                :class="{ 'contains-disallowed': !containsOnlyAllowedLetters }"
+            >
                 <!-- the actual text box where the user types -->
-                <input
-                    v-model="currentAttempt"
-                    type="text"
-                    id="textbox"
-                    @keyup.enter="addNewWordSubmission(currentAttempt)"
-                />
+                <input type="text" />
+                <!-- TODO 3 make this input autofocused when it's created. -->
+                <!-- TODO 6 keep this in sync with the "currentAttempt" value in your Vue. -->
+                <!-- TODO 9 disable the input when the timer runs out -->
+                <!-- TODO 10 if the user presses 'enter', submit the current word -->
 
                 <br>
                 <div class="disallowed-letters">
-                    <span v-for="letter in disallowedLettersInWord">
-                        {{ letter }}
-                    </span>
+                    <!-- TODO 8 add a <span> for each disallowed letter here -->
                 </div>
-                <!-- red feedback chips will be injected here -->
             </div>
 
             <!-- a container to display the user's word submissions -->
             <div id="word-submissions">
-                <!-- word submission chips will be injected here -->
-                <submitted-word
-                    v-for="w in wordSubmissions"
-                    :word="w.word"
-                    :score="w.score"
-                    :loading="w.loading"
-                    :is-real-word="w.isRealWord"
-                />
+                <!-- TODO 11 add a <submitted-word> component for each word here -->
             </div>
         </section>
     </main>
