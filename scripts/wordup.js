@@ -139,10 +139,12 @@ var app = new Vue({
              * scores of all the wordSubmissions whose word is a real dictionary word
              */
             let totalScore = 0;
-           this.wordSubmissions.forEach(function(wordObj){
-               totalScore += wordScore(wordObj.word);
-           })
-           return totalScore;
+            this.wordSubmissions.forEach(function(wordObj){
+                if (wordObj.isRealWord === true){
+                    totalScore += wordScore(wordObj.word);
+                }
+            })
+            return totalScore;
         },
         gameInProgress: function() {
             return this.secondsRemaining > 0 && this.timer !== null;
@@ -269,11 +271,7 @@ var app = new Vue({
                         word.isRealWord = true;
                         word.loading = false;
                     }
-
-                    // TODO 14
-                    // Update the data to say that the word is real.
-                    // You'll have to find the correct entry in this.wordSubmissions,
-                    // and change it's loading and isRealWord values
+                    this.wordSubmissions = [].concat(this.wordSubmissions)
                 })
                 .catch(error => console.error(error));
         },
