@@ -211,7 +211,6 @@ var app = new Vue({
             this.wordSubmissions = [];
             this.currentAttempt = '';
             this.timer = this.startTimer();
-            console.log(this.allLetters[0])
         },
         endGame: function() {
             this.stopTimer();
@@ -251,20 +250,22 @@ var app = new Vue({
              * the corresponding wordSubmission in the data.
              */
 
-            // TODO 12 what should the url be?
-            fetch(`www.example.com`)
+            fetch(`https://www.dictionaryapi.com/api/v3/references/collegiate/json/${word}?key=f028e0d5-eaa5-4b6c-88e2-18a9223c136b`)
                 .then(response => (response.ok ? response.json() : Promise.reject(response)))
                 .then(resp => {
-                    console.log("We received a response from Pearson!");
+                    console.log("We received a response from Merriam-Webster!");
 
                     // let's print the response to the console so we can take a looksie
                     console.log(resp);
-
-                    // TODO 13
-                    // Replace the 'true' below.
-                    // If the response contains any results, then the word is legitimate.
-                    // Otherwise, it is not.
-                    var isARealWord = true;
+                    if (resp[0].hwi == undefined){
+                        word.isRealWord = false;
+                        word.loading = false;
+                        console.log(word.isRealWord);
+                    } else {
+                        word.isRealWord = true;
+                        word.loading = false;
+                        console.log(word.isRealWord);
+                    }
 
                     // TODO 14
                     // Update the data to say that the word is real.
