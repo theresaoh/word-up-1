@@ -122,6 +122,8 @@ var app = new Vue({
             // how much time is left in the current game
             secondsRemaining: GAME_DURATION,
 
+            allLetters: Object.keys(scrabblePointsForEachLetter),
+
             // a list of the 7 letters that the player is allowed to use
             allowedLetters: [],
 
@@ -175,9 +177,10 @@ var app = new Vue({
              * Given a letter, checks whether that letter is "disallowed"
              * meaning it is not a member of the .allowedLetters list from the current data
              */
-
-            //TODO 7 actually check if the letter is disallowed
-            return false;
+            if (this.allowedLetters.includes(letter)){
+                return false;
+            }
+            return true;
         },
 
         // The next couple lines are odd.
@@ -208,6 +211,7 @@ var app = new Vue({
             this.wordSubmissions = [];
             this.currentAttempt = '';
             this.timer = this.startTimer();
+            console.log(this.allLetters[0])
         },
         endGame: function() {
             this.stopTimer();
@@ -237,8 +241,7 @@ var app = new Vue({
                 // when the api call comes back, we can update loading and isRealWord.
                 this.checkIfWordIsReal(word);
             }
-            // TODO 10
-            // now that we've added the word, clear out the text input.
+            this.currentAttempt = "";
         },
         checkIfWordIsReal: function(word) {
             /**
