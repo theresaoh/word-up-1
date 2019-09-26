@@ -73,17 +73,11 @@ function wordScore(word) {
     // split the word into a list of letters
     var letters = word.split("");
 
-    // TODO 15
-    // Replace the empty list below.
-    // Map the list of letters into a list of scores, one for each letter.
-    var letterScores = [];
+    let letterScores = letters.map(l => scrabblePointsForEachLetter[l])    
 
     // return the total sum of the letter scores
     return letterScores.reduce(add, 0);
 }
-
-
-
 
 // ----------------- UTILS -----------------
 
@@ -147,7 +141,7 @@ var app = new Vue({
             // TODO 16
             // add up all the wordScore values from the words in this.wordSubmissions
             // be sure not to include any that aren't real words.
-            return 0;
+            return totalScore;
         },
         gameInProgress: function() {
             return this.secondsRemaining > 0 && this.timer !== null;
@@ -231,14 +225,21 @@ var app = new Vue({
                 // add the word, with it's score.
                 // set loading to true, and isRealWord to null, to represent
                 // that we're not sure yet if this is a real word.
-                this.wordSubmissions.push({
-                    word: word,
-                    loading: true,
-                });
+                // this.wordSubmissions.push({
+                //     word: word,
+                //     loading: true,
+                // });
+
+                wordObj = { 
+                    word: word, 
+                    loading: true 
+                }
+
+                this.wordSubmissions.push(wordObj);
 
                 // Now, check against the api to see if the word is real.
                 // when the api call comes back, we can update loading and isRealWord.
-                this.checkIfWordIsReal(word);
+                this.checkIfWordIsReal(wordObj);
             }
             this.currentAttempt = "";
         },
@@ -250,21 +251,17 @@ var app = new Vue({
              * the corresponding wordSubmission in the data.
              */
 
-            fetch(`https://www.dictionaryapi.com/api/v3/references/collegiate/json/${word}?key=f028e0d5-eaa5-4b6c-88e2-18a9223c136b`)
+            fetch(`https://www.dictionaryapi.com/api/v3/references/collegiate/json/${word.word}?key=f028e0d5-eaa5-4b6c-88e2-18a9223c136b`)
                 .then(response => (response.ok ? response.json() : Promise.reject(response)))
                 .then(resp => {
                     console.log("We received a response from Merriam-Webster!");
 
-                    // let's print the response to the console so we can take a looksie
-                    console.log(resp);
                     if (resp[0].hwi == undefined){
                         word.isRealWord = false;
                         word.loading = false;
-                        console.log(word.isRealWord);
                     } else {
                         word.isRealWord = true;
                         word.loading = false;
-                        console.log(word.isRealWord);
                     }
 
                     // TODO 14
@@ -274,7 +271,6 @@ var app = new Vue({
                 })
                 .catch(error => console.error(error));
         },
-
 
         // ----------------- THE TIMER -----------------
         // don't fret about these too hard. You can ignore these functions

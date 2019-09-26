@@ -65,7 +65,7 @@
 
             <!-- a container to display the user's word submissions -->
             <div id="word-submissions" v-for="word in wordSubmissions">
-                <submitted-word :word="word.word" :score="wordScore(word.word)" :loading="word.loading" :isRealWord="word.isRealWord" v-if="word.isRealWord==true">{{ word }}</submitted-word>
+                <submitted-word :word="word.word" :score="wordScore(word.word)" :loading="word.loading" :is-real-word="word.isRealWord" v-if="word.isRealWord">{{ word }}</submitted-word>
             </div>
         </section>
     </main>
