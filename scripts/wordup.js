@@ -138,6 +138,12 @@ var app = new Vue({
              * Returns the user's current total score, which is the sum of the
              * scores of all the wordSubmissions whose word is a real dictionary word
              */
+            let totalScore = 0;
+            for (var i = 0; i < this.wordSubmissions.length; i++){
+                if (this.wordSubmissions[i].isRealWord === true){
+                    totalScore += wordScore(this.wordSubmissions[i].word);
+                }
+            }
             // TODO 16
             // add up all the wordScore values from the words in this.wordSubmissions
             // be sure not to include any that aren't real words.
